@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use function event;
+use function is_int;
 
 class RegisterController extends Controller
 {
@@ -63,16 +66,35 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param array $data
-     * @return \App\User
+     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
      */
-    protected function create(array $data) : User
+    protected function create(array $data) : ?Model
     {
-        return User::firstOrNew([
+        try {
+            if (request()->has('email') === true) {
+                $model = User::where(['email' => $data['email']])->firstOrFail();
+            } else {
+                $model = User::updateOrCreate($this->attributes($data));
+            }
+        } catch (ModelNotFoundException $exception) {
+            $model = User::updateOrCreate($this->attributes($data));
+        }
+        
+        return $model;
+    }
+    
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function attributes($data) : array
+    {
+        return [
             'first_name' => $data['first_name'],
             'last_name'  => $data['last_name'],
             'email'      => $data['email'],
             'password'   => Hash::make($data['password']),
-        ]);
+        ];
     }
     
     /**
@@ -85,10 +107,19 @@ class RegisterController extends Controller
     {
         $errors = $this->validator($request->all());
         
-        event(new Registered($user = $this->create($request->all())));
-
-        $this->guard()->login($user);
+        if ($errors->passes()) {
+            $user = $this->create($request->all());
+            event(new Registered($user));
+            $user = $user->id;
+        } else {
+            $user = [];
+        }
         
-        return \response()->json(['errors' => $errors->errors()->all()]);
+        return response()->json([
+            'errors' => $errors->errors()->all(),
+            'data'   => [
+                'model' => is_int($user),
+            ],
+        ]);
     }
 }

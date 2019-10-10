@@ -14,7 +14,8 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
-        "laravel/ui": "v1.1.0"
+        "laravel/ui": "v1.1.0",
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
