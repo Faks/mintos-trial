@@ -19,16 +19,31 @@ use App\RSSFeed;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Stevebauman\Purify\Facades\Purify;
+use function array_keys;
 use function array_values;
+use function collect;
 use function compact;
+use function dd;
 use function dump;
+use function explode;
 use function file_get_contents;
+use function in_array;
 use function redirect;
 use function simplexml_load_string;
 use function view;
 
 class RSSArticlesController extends Controller
 {
+    public $commonWords = [
+        'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I',
+        'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'they',
+        'we', 'say', 'her', 'she', 'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what', 'so', 'up', 'out',
+        'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when', 'make', 'can', 'like', 'time', 'no', 'just',
+        'him', 'know', 'take', 'people', 'into', 'year', 'your', 'good', 'some', 'could', 'them', 'see', 'other',
+        'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also', 'back', 'after', 'use',
+        'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even', 'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us',
+    ];
+    
     /**
      * Create a new controller instance.
      *
@@ -46,9 +61,105 @@ class RSSArticlesController extends Controller
      */
     public function index()
     {
-        $rssFeeds = RSSFeed::query()->orderBy('published_at', 'desc')->paginate();
+        $rssFeeds = RSSFeed::query()->orderBy('published_at', 'desc')->get()->toArray();
         
-        return view('home', compact('rssFeeds'));
+        
+        $titleParts = [];
+        foreach ($rssFeeds as $item) {
+            $titleParts[$item['id']] = [
+                'tags' => explode(' ', $item['title']),
+            ];
+        }
+
+//        dd($titleParts);
+        
+        $buildExcludeIds = [];
+        foreach ($rssFeeds as $part) {
+//            dump($part['parts']['tags']);
+
+//            dump($part['model']);
+            
+            foreach ($titleParts[$part['id']]['tags'] as $tags) {
+//                dump($tags);
+//                dump($part['id']);
+                if (in_array($tags, $this->commonWords, true)) {
+                    $buildExcludeIds[] = $part['id'];
+                }
+            }
+
+//            dump($titleParts[$part['id']]);
+            
+            foreach ($rssFeeds as $parts) {
+
+//                dump($parts);
+
+//                if (in_array($parts, $this->commonWords, true)) {
+//                    $buildExcludeIds[] = $part['model']['id'];
+//                }
+            
+            }
+//            dump($part['model']['parts']);
+
+//                if (in_array($tag, $this->commonWords, true)) {
+//                    $buildExcludeIds[] = $part['parts']['id'];
+//                }
+//            dump($part);
+        
+        }
+        
+//        dump($buildExcludeIds);
+
+//        dd($buildExcludeIds);
+
+//        dd($buildExcludeIds);
+
+//        dump(array_unique($buildExcludeIds));
+
+//        dump(in_array());
+    
+        dump(array_keys($titleParts));
+    
+    
+        exit();
+        dd($titleParts[2]);
+        
+        
+        foreach ($rssFeeds as $item) {
+            foreach (explode(' ', $item['title']) as $part) {
+                if (in_array($part, $this->commonWords)) {
+//                    dump($titleParts[$item['id']]);
+                }
+            }
+        }
+        
+        if (in_array($titleParts, $this->commonWords)) {
+        
+        }
+
+
+//        dump($titleParts);
+        
+        $excludeIds = [];
+
+//        ddd($titleParts);
+        
+        exit();
+        
+        
+        $rssFilteredTags = collect($titleParts)->map(function ($item) {
+            if (!in_array($item, $this->commonWords, true)) {
+                return $item;
+            }
+        })->filter()->toArray();
+
+//        dd($rssFilteredTags);
+        
+        return view('home', compact('rssFeeds', 'rssFilteredTags'));
+    }
+    
+    public function temp()
+    {
+        return view('temp');
     }
     
     /**

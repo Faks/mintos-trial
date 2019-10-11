@@ -26,10 +26,6 @@
                         @endforeach
                     </div>
                 </div>
-                
-                <div class="text-center">
-                    {{ $rssFeeds->links() }}
-                </div>
             </div>
         </div>
     </div>
