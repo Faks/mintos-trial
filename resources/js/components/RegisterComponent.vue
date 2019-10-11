@@ -69,7 +69,7 @@
                                :class="['form-control', errors.email ? 'has-error' : '']"
                                name="email"
                                v-model="form.email"
-                               autofocus @change="formHandleSubmit()">
+                               autofocus @change="formHandleEmailValidateSubmit()">
                     </div>
                 </div>
                 
@@ -144,6 +144,26 @@
                 axios.post('/register', dataform).then(response => {
                     this.errors = response.data.errors;
                     
+                    if (this.errors.length === 0) {
+                        this.success = true;
+                    }
+                }).catch((error) => {
+                    // this.errors = error.response.data.errors;
+                    this.success = false;
+                });
+            },
+            formHandleEmailValidateSubmit() {
+                this.success = false;
+                let dataform = new FormData();
+                dataform.append('first_name', this.form.first_name);
+                dataform.append('last_name', this.form.last_name);
+                dataform.append('email', this.form.email);
+                dataform.append('password', this.form.password);
+                dataform.append('password_confirmation', this.form.password_confirmation);
+                
+                axios.post('/register/validate/email', dataform).then(response => {
+                    this.errors = response.data.errors;
+            
                     if (this.errors.length === 0) {
                         this.success = true;
                     }

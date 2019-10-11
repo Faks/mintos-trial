@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use function event;
 use function is_int;
+use function response;
 
 class RegisterController extends Controller
 {
@@ -120,6 +121,22 @@ class RegisterController extends Controller
             'data'   => [
                 'model' => is_int($user),
             ],
+        ]);
+    }
+    
+    
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function validateEmail(Request $request)
+    {
+        $errors = $this->validator($request->all());
+        
+        return response()->json([
+            'errors' => $errors->errors()->all(),
         ]);
     }
 }
