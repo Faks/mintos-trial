@@ -20,4 +20,4 @@ Auth::routes(['verify' => true]);
 Route::get('/home', 'RSSArticlesController@index')->name('home');
 Route::get('/rss', 'RSSArticlesController@collect')->name('rss');
 Route::get('/rss/store', 'RSSArticlesController@store')->name('rss-store');
-Route::post('/register/validate/email', 'Auth\RegisterController@validateEmail');
+Route::post('/register/validates', 'Auth\RegisterController@validates');

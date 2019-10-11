@@ -124,14 +124,13 @@ class RegisterController extends Controller
         ]);
     }
     
-    
     /**
-     * Handle a registration request for the application.
+     * Handle a registration validates request for the application.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function validateEmail(Request $request)
+    public function validates(Request $request)
     {
         $errors = $this->validator($request->all());
         

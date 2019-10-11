@@ -36,8 +36,9 @@
                                :class="['form-control', errors.first_name ? 'has-error' : '']"
                                name="last_name"
                                v-model="form.first_name"
-                               autofocus>
-                        
+                               autofocus
+                               @change="formHandleChangeValidateSubmit()">
+    
                         <div v-if="errors.first_name" class="text-danger">
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ errors.first_name[0] }}</strong>
@@ -56,7 +57,8 @@
                                :class="['form-control', errors.last_name ? 'has-error' : '']"
                                name="last_name"
                                v-model="form.last_name"
-                               autofocus>
+                               autofocus
+                               @change="formHandleChangeValidateSubmit()">
                     </div>
                 </div>
                 
@@ -69,7 +71,8 @@
                                :class="['form-control', errors.email ? 'has-error' : '']"
                                name="email"
                                v-model="form.email"
-                               autofocus @change="formHandleEmailValidateSubmit()">
+                               autofocus
+                               @change="formHandleChangeValidateSubmit()">
                     </div>
                 </div>
                 
@@ -82,7 +85,8 @@
                                :class="['form-control', errors.password ? 'has-error' : '']"
                                name="password"
                                v-model="form.password"
-                               autofocus>
+                               autofocus
+                               @change="formHandleChangeValidateSubmit()">
                     </div>
                 </div>
                 
@@ -96,7 +100,8 @@
                                :class="['form-control', errors.password_confirmation ? 'has-error' : '']"
                                name="password_confirmation"
                                v-model="form.password_confirmation"
-                               autofocus>
+                               autofocus
+                               @change="formHandleChangeValidateSubmit()">
                     </div>
                 </div>
                 
@@ -152,7 +157,7 @@
                     this.success = false;
                 });
             },
-            formHandleEmailValidateSubmit() {
+            formHandleChangeValidateSubmit() {
                 this.success = false;
                 let dataform = new FormData();
                 dataform.append('first_name', this.form.first_name);
@@ -161,9 +166,8 @@
                 dataform.append('password', this.form.password);
                 dataform.append('password_confirmation', this.form.password_confirmation);
                 
-                axios.post('/register/validate/email', dataform).then(response => {
+                axios.post('/register/validates', dataform).then(response => {
                     this.errors = response.data.errors;
-            
                     if (this.errors.length === 0) {
                         this.success = true;
                     }
