@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Welcome  to the Cube Systems Trial
+                    Welcome  to the Mintos Trial
                 </div>
             </div>
         </div>

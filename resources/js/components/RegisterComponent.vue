@@ -38,7 +38,7 @@
                                v-model="form.first_name"
                                autofocus
                                @change="formHandleChangeValidateSubmit()">
-    
+                        
                         <div v-if="errors.first_name" class="text-danger">
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ errors.first_name[0] }}</strong>
@@ -168,9 +168,6 @@
                 
                 axios.post('/register/validates', dataform).then(response => {
                     this.errors = response.data.errors;
-                    if (this.errors.length === 0) {
-                        this.success = true;
-                    }
                 }).catch((error) => {
                     // this.errors = error.response.data.errors;
                     this.success = false;
