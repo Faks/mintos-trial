@@ -19,15 +19,12 @@ use App\RSSFeed;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Stevebauman\Purify\Facades\Purify;
-use function array_keys;
+use function array_count_values;
 use function array_values;
 use function collect;
 use function compact;
-use function dd;
-use function dump;
 use function explode;
 use function file_get_contents;
-use function in_array;
 use function redirect;
 use function simplexml_load_string;
 use function view;
@@ -61,98 +58,24 @@ class RSSArticlesController extends Controller
      */
     public function index()
     {
-        $rssFeeds = RSSFeed::query()->orderBy('published_at', 'desc')->get()->toArray();
-        
-        
-        $titleParts = [];
-        foreach ($rssFeeds as $item) {
-            $titleParts[$item['id']] = [
-                'tags' => explode(' ', $item['title']),
-            ];
-        }
-
-//        dd($titleParts);
-        
-        $buildExcludeIds = [];
-        foreach ($rssFeeds as $part) {
-//            dump($part['parts']['tags']);
-
-//            dump($part['model']);
-            
-            foreach ($titleParts[$part['id']]['tags'] as $tags) {
-//                dump($tags);
-//                dump($part['id']);
-                if (in_array($tags, $this->commonWords, true)) {
-                    $buildExcludeIds[] = $part['id'];
-                }
-            }
-
-//            dump($titleParts[$part['id']]);
-            
-            foreach ($rssFeeds as $parts) {
-
-//                dump($parts);
-
-//                if (in_array($parts, $this->commonWords, true)) {
-//                    $buildExcludeIds[] = $part['model']['id'];
-//                }
-            
-            }
-//            dump($part['model']['parts']);
-
-//                if (in_array($tag, $this->commonWords, true)) {
-//                    $buildExcludeIds[] = $part['parts']['id'];
-//                }
-//            dump($part);
-        
+        /**
+         * Filtering Common words
+         */
+        foreach ($this->commonWords as $commonWord) {
+            $rssFeeds = RSSFeed::query()->where('title', 'not like', '%' . $commonWord . '%')->orderBy('published_at', 'desc')->get();
         }
         
-//        dump($buildExcludeIds);
-
-//        dd($buildExcludeIds);
-
-//        dd($buildExcludeIds);
-
-//        dump(array_unique($buildExcludeIds));
-
-//        dump(in_array());
-    
-        dump(array_keys($titleParts));
-    
-    
-        exit();
-        dd($titleParts[2]);
+        /**
+         * Building Tags array
+         */
+        $rssFilteredTags = collect($rssFeeds)->map(static function ($item) {
+            return explode(' ', $item->title);
+        })->flatten()->toArray();
         
-        
-        foreach ($rssFeeds as $item) {
-            foreach (explode(' ', $item['title']) as $part) {
-                if (in_array($part, $this->commonWords)) {
-//                    dump($titleParts[$item['id']]);
-                }
-            }
-        }
-        
-        if (in_array($titleParts, $this->commonWords)) {
-        
-        }
-
-
-//        dump($titleParts);
-        
-        $excludeIds = [];
-
-//        ddd($titleParts);
-        
-        exit();
-        
-        
-        $rssFilteredTags = collect($titleParts)->map(function ($item) {
-            if (!in_array($item, $this->commonWords, true)) {
-                return $item;
-            }
-        })->filter()->toArray();
-
-//        dd($rssFilteredTags);
+        /**
+         * Counting Values in Tags array
+         */
+        $rssFilteredTags = array_count_values($rssFilteredTags);
         
         return view('home', compact('rssFeeds', 'rssFilteredTags'));
     }
