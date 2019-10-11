@@ -80,11 +80,6 @@ class RSSArticlesController extends Controller
         return view('home', compact('rssFeeds', 'rssFilteredTags'));
     }
     
-    public function temp()
-    {
-        return view('temp');
-    }
-    
     /**
      * Collecting RSS Feed
      * Parsing RSS Feed
