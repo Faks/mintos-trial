@@ -9,13 +9,14 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-simplexml": "*",
         "barryvdh/laravel-debugbar": "v3.2.8",
         "barryvdh/laravel-ide-helper": "v2.6.5",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "laravel/ui": "v1.1.0",
-        "ext-simplexml": "*"
+        "stevebauman/purify": "v3.0.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

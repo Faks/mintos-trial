@@ -18,6 +18,7 @@ namespace App\Http\Controllers;
 use App\RSSFeed;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Stevebauman\Purify\Facades\Purify;
 use function array_values;
 use function compact;
 use function file_get_contents;
@@ -63,12 +64,12 @@ class RSSArticlesController extends Controller
         $rssArticles = [];
         foreach ($simpleXml->channel->xpath('item') as $item) {
             $rssArticles[] = [
-                'title'        => (string)$item->title,
-                'description'  => (string)$item->description,
-                'author'       => (string)$item->author,
-                'url'          => (string)$item->link,
+                'title'        => Purify::clean((string)$item->title),
+                'description'  => Purify::clean((string)$item->description),
+                'author'       => Purify::clean((string)$item->author),
+                'url'          => Purify::clean((string)$item->link),
                 'img_data'     => array_values((array)$item->enclosure)[0],
-                'published_at' => Carbon::parse((string)$item->pubDate)->format('Y-m-d H:i:s'),
+                'published_at' => Purify::clean(Carbon::parse((string)$item->pubDate)->format('Y-m-d H:i:s')),
             ];
         }
         
@@ -91,8 +92,8 @@ class RSSArticlesController extends Controller
                 'description'  => $article['description'],
                 'author'       => $article['author'],
                 'url'          => $article['url'],
-                'img_url'      => $article['img_data']['url'],
-                'mime_type'    => $article['img_data']['type'],
+                'img_url'      => Purify::clean($article['img_data']['url']),
+                'mime_type'    => Purify::clean($article['img_data']['type']),
                 'published_at' => $article['published_at'],
             ]);
         }
