@@ -16,7 +16,8 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "laravel/ui": "v1.1.0",
-        "stevebauman/purify": "v3.0.0"
+        "stevebauman/purify": "v3.0.0",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
