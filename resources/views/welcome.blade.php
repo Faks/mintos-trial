@@ -70,6 +70,10 @@
                     @auth
                         <a href="{{ url('/home') }}">Home</a>
                     @else
+                        <a class="nav-link" href="https://bitbucket.org/Faks/mintos-trial/src/master/">Bitbutcket</a>
+
+                        <a class="nav-link" href="https://www.linkedin.com/in/oskars-germovs-a94b3318a/">LinkedIn</a>
+
                         <a href="{{ route('login') }}">Login</a>
 
                         @if (Route::has('register'))

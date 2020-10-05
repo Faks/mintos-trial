@@ -12,12 +12,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
-        
         return User::create(
             [
-                'email'             => 'hakerx1@gmail.com',
-                'password'          => bcrypt('Hakerx80'),
+                'email' => 'mintos-trial@solum-designum.eu',
+                'password' => bcrypt('mintos-trial'),
                 'email_verified_at' => now(),
             ]
         );

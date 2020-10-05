@@ -38,6 +38,15 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://bitbucket.org/Faks/mintos-trial/src/master/">Bitbutcket</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://www.linkedin.com/in/oskars-germovs-a94b3318a/">LinkedIn</a>
+                        </li>
+
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
@@ -52,7 +61,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('rss-store') }}">{{ __('Collect RSS') }}</a>
                             </li>
-                        
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
@@ -62,7 +71,7 @@
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();  document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-                                    
+
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
