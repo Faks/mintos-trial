@@ -62,6 +62,10 @@
                                 <a class="nav-link" href="{{ route('rss-store') }}">{{ __('Collect RSS') }}</a>
                             </li>
 
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('rss-destroy') }}">{{ __('Purge RSS') }}</a>
+                            </li>
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>

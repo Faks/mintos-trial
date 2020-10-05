@@ -40,7 +40,7 @@ class RSSArticlesController extends Controller
         'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also', 'back', 'after', 'use',
         'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even', 'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us',
     ];
-    
+
     /**
      * Create a new controller instance.
      *
@@ -50,7 +50,7 @@ class RSSArticlesController extends Controller
     {
         $this->middleware(['auth', 'verified']);
     }
-    
+
     /**
      * Show the application dashboard.
      *
@@ -64,22 +64,22 @@ class RSSArticlesController extends Controller
         foreach ($this->commonWords as $commonWord) {
             $rssFeeds = RSSFeed::query()->where('title', 'not like', '%' . $commonWord . '%')->orderBy('published_at', 'desc')->get();
         }
-        
+
         /**
          * Building Tags array
          */
         $rssFilteredTags = collect($rssFeeds)->map(static function ($item) {
             return explode(' ', $item->title);
         })->flatten()->toArray();
-        
+
         /**
          * Counting Values in Tags array
          */
         $rssFilteredTags = array_count_values($rssFilteredTags);
-        
+
         return view('home', compact('rssFeeds', 'rssFilteredTags'));
     }
-    
+
     /**
      * Collecting RSS Feed
      * Parsing RSS Feed
@@ -90,9 +90,9 @@ class RSSArticlesController extends Controller
     public function collect() : array
     {
         $simpleXml = simplexml_load_string(file_get_contents('https://www.theregister.co.uk/software/headlines.atom'));
-        
+
         $rssArticles = [];
-        
+
         foreach ($simpleXml->entry as $item) {
             $rssArticles[] = [
                 'title'        => Purify::clean((string)$item->title),
@@ -102,10 +102,10 @@ class RSSArticlesController extends Controller
                 'published_at' => Purify::clean(Carbon::parse((string)$item->updated)->format('Y-m-d H:i:s')),
             ];
         }
-        
+
         return $rssArticles;
     }
-    
+
     /**
      * Storing Articles
      *
@@ -114,8 +114,8 @@ class RSSArticlesController extends Controller
      */
     public function store() : RedirectResponse
     {
-        $this->destroy();
-        
+        $this->purge();
+
         foreach ($this->collect() as $article) {
             RSSFeed::query()->firstOrCreate([
                 'title'        => $article['title'],
@@ -126,14 +126,20 @@ class RSSArticlesController extends Controller
                 'published_at' => $article['published_at'],
             ]);
         }
-        
+
         return redirect()->back();
     }
-    
+
     /**
-     * @throws \Exception
+     * @return RedirectResponse
      */
-    public function destroy() : void
+    public function destroy()
+    {
+        $this->purge();
+        return redirect()->back();
+    }
+
+    private function purge()
     {
         foreach (RSSFeed::all() as $article) {
             $article->delete();
