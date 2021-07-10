@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -43,14 +43,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class RSSFeed extends Model
 {
     use SoftDeletes;
-    
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'rss_feed';
-    
+
     /**
      * The attributes that are mass assignable.
      *

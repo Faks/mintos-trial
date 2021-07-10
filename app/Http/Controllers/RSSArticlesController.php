@@ -1,24 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Faks
- * GitHub: https://github.com/Faks
- *******************************************
- * Company Name: Solum DeSignum
- * Company Website: http://solum-designum.com
- * Company GitHub: https://github.com/SolumDeSignum
- ********************************************************
- * Date: 2019.10.10.
- * Time: 20:36
- */
 
 namespace App\Http\Controllers;
 
 
-use App\RSSFeed;
+use App\Models\RSSFeed;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Stevebauman\Purify\Facades\Purify;
+
 use function array_count_values;
 use function array_values;
 use function collect;
@@ -62,15 +51,20 @@ class RSSArticlesController extends Controller
          * Filtering Common words
          */
         foreach ($this->commonWords as $commonWord) {
-            $rssFeeds = RSSFeed::query()->where('title', 'not like', '%' . $commonWord . '%')->orderBy('published_at', 'desc')->get();
+            $rssFeeds = RSSFeed::query()->where('title', 'not like', '%' . $commonWord . '%')->orderBy(
+                'published_at',
+                'desc'
+            )->get();
         }
 
         /**
          * Building Tags array
          */
-        $rssFilteredTags = collect($rssFeeds)->map(static function ($item) {
-            return explode(' ', $item->title);
-        })->flatten()->toArray();
+        $rssFilteredTags = collect($rssFeeds)->map(
+            static function ($item) {
+                return explode(' ', $item->title);
+            }
+        )->flatten()->toArray();
 
         /**
          * Counting Values in Tags array
